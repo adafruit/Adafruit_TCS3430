@@ -1,0 +1,32 @@
+# Arduino IDE files
+*.tmp
+*.bak
+*~
+
+# Build artifacts
+*.o
+*.a
+*.hex
+*.elf
+*.map
+
+# Documentation build
+docs/html/
+docs/latex/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Datasheet files (don't commit PDFs/TXT)
+*.pdf
+*.txt
+TCS3430*.pdf
+TCS3430*.txt
+
+# Test output
+output.txt
