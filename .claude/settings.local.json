@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(~/bin/arduino-cli board:*)",
+      "Bash(python:*)",
+      "Bash(arduino-cli upload:*)",
+      "Bash(arduino-cli compile:*)",
+      "Bash(arduino-cli board:*)",
+      "Bash(arduino-cli lib examples:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
+    ],
+    "deny": []
+  }
+}
