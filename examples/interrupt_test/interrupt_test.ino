@@ -2,10 +2,9 @@
  * @file interrupt_test.ino
  *
  * Interrupt example for TCS3430 XYZ Tristimulus Color Sensor
- * Sets a high threshold on the Y channel — shine a flashlight on the
- * sensor to trigger the interrupt! Connect INT to pin 2 with INPUT_PULLUP.
- * Note: the Adafruit breakout has an open-drain inverter on INT,
- * so the interrupt is active-HIGH at the MCU.
+ * Sets a high threshold — shine a flashlight on the sensor to trigger!
+ * Connect INT to pin 2. The Adafruit breakout has an open-drain inverter
+ * on INT, so active-HIGH at MCU. Needs INPUT_PULLUP.
  *
  * Limor 'ladyada' Fried with assistance from Claude Code
  * MIT License
@@ -16,12 +15,6 @@
 #define INT_PIN 2
 
 Adafruit_TCS3430 tcs = Adafruit_TCS3430();
-
-volatile bool intFired = false;
-
-void intHandler() {
-  intFired = true;
-}
 
 void setup() {
   Serial.begin(115200);
@@ -41,86 +34,90 @@ void setup() {
   }
 
   Serial.println(F("TCS3430 found!"));
+  pinMode(INT_PIN, INPUT_PULLUP);
 
   // Setup sensor
   tcs.setALSGain(TCS3430_GAIN_16X);
   tcs.setIntegrationTime(100.0f);
+  tcs.setInterruptPersistence(TCS3430_PERS_3); // require 3 consecutive
 
-  // Read current ambient level to set threshold above it
+  // Read current ambient to set threshold above it
   delay(200);
   uint16_t x, y, z, ir1;
   tcs.getChannels(&x, &y, &z, &ir1);
 
-  uint16_t threshold = y + (y / 2); // 50% above current ambient
-  if (threshold < y + 100) {
-    threshold = y + 100; // at least 100 above
+  // Thresholds compare against CH0 (Z channel)
+  uint16_t threshold = z * 2; // 2x above current ambient
+  if (threshold < z + 200) {
+    threshold = z + 200;
   }
   if (threshold > 65000) {
     threshold = 65000;
   }
 
-  Serial.print(F("Current ambient Y: "));
-  Serial.println(y);
-  Serial.print(F("Interrupt threshold: "));
+  Serial.print(F("Current ambient Z: "));
+  Serial.println(z);
+  Serial.print(F("Interrupt threshold (high): "));
   Serial.println(threshold);
   Serial.println();
   Serial.println(F("Shine a flashlight on the sensor to trigger!"));
+  Serial.println(F("INT pin idle = LOW, active = HIGH (breakout inverter)"));
   Serial.println();
 
-  // Threshold window: low=0, high=threshold
-  // Interrupt fires when Y goes ABOVE threshold (outside window)
+  // Window: low=0, high=threshold
+  // Interrupt fires when Z exceeds threshold (outside window)
   tcs.setALSThresholdLow(0);
   tcs.setALSThresholdHigh(threshold);
-  tcs.setInterruptPersistence(TCS3430_PERS_EVERY);
   tcs.setInterruptClearOnRead(false);
 
-  // Enable ALS interrupt on the INT pin
+  // Clean start
   tcs.enableALSInt(true);
   tcs.ALSEnable(false);
   tcs.clearALSInterrupt();
   tcs.ALSEnable(true);
 
-  // Attach hardware interrupt — active HIGH due to breakout inverter
-  pinMode(INT_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(INT_PIN), intHandler, RISING);
+  Serial.print(F("INT pin: "));
+  Serial.println(digitalRead(INT_PIN) ? "HIGH" : "LOW");
 }
 
 void loop() {
-  if (intFired) {
-    intFired = false;
-
+  // Check INT pin state
+  if (digitalRead(INT_PIN) == HIGH) {
+    // Read channels to see what triggered it
     uint16_t x, y, z, ir1;
     tcs.getChannels(&x, &y, &z, &ir1);
 
-    Serial.print(F("*** INTERRUPT! *** Y="));
+    Serial.print(F("*** INTERRUPT! *** Z="));
+    Serial.print(z);
+    Serial.print(F("  Y="));
     Serial.print(y);
     Serial.print(F("  X="));
     Serial.print(x);
-    Serial.print(F("  Z="));
-    Serial.print(z);
     Serial.print(F("  IR1="));
     Serial.println(ir1);
 
-    // Clear interrupt
+    // Clear and wait for pin to go idle before checking again
     tcs.ALSEnable(false);
     tcs.clearALSInterrupt();
     tcs.ALSEnable(true);
+
+    // Wait for INT to settle back to idle
+    delay(500);
+    return;
   }
 
-  // Also print periodic readings so user can see ambient level
+  // Periodic ambient reading every 2 seconds
   static uint32_t lastPrint = 0;
   if (millis() - lastPrint > 2000) {
     lastPrint = millis();
 
     uint16_t x, y, z, ir1;
     tcs.getChannels(&x, &y, &z, &ir1);
-    Serial.print(F("Y="));
+    Serial.print(F("Z="));
+    Serial.print(z);
+    Serial.print(F("  Y="));
     Serial.print(y);
-    Serial.print(F("  (waiting for interrupt)"));
-
-    if (digitalRead(INT_PIN) == HIGH) {
-      Serial.print(F("  [INT pin HIGH]"));
-    }
-    Serial.println();
+    Serial.print(F("  (waiting...)  INT="));
+    Serial.println(digitalRead(INT_PIN) ? "HIGH" : "LOW");
   }
 }
