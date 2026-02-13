@@ -1,2 +1,8 @@
 TEST_START: test_power
+Powering off sensor
+isPoweredOn after off: false
+Read while off: X=0 Y=0 Z=0 IR1=0
+Powering on sensor + enabling ALS
+isPoweredOn after on: true
+Read after on: X=1241 Y=3428 Z=1898 IR1=267
 TEST_PASS: test_power

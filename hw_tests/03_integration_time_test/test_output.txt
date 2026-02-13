@@ -1,2 +1,7 @@
 TEST_START: test_integration_time
+Integration time set to 20 ms
+Y average (20 ms): 3187
+Integration time set to 200 ms
+Y average (200 ms): 6940
+Longer integration produced higher Y as expected.
 TEST_PASS: test_integration_time

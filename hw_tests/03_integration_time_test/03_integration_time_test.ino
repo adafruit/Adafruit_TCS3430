@@ -47,6 +47,7 @@ void setup() {
   delay(500);
 
   tcs.setIntegrationTime(20.0f);
+  Serial.println("Integration time set to 20 ms");
   delay(30);
   uint16_t y_short = 0;
   if (!readAverageY(&y_short)) {
@@ -55,8 +56,11 @@ void setup() {
     pixels.show();
     return;
   }
+  Serial.print("Y average (20 ms): ");
+  Serial.println(y_short);
 
   tcs.setIntegrationTime(200.0f);
+  Serial.println("Integration time set to 200 ms");
   delay(220);
   uint16_t y_long = 0;
   if (!readAverageY(&y_long)) {
@@ -65,6 +69,8 @@ void setup() {
     pixels.show();
     return;
   }
+  Serial.print("Y average (200 ms): ");
+  Serial.println(y_long);
 
   pixels.clear();
   pixels.show();
@@ -77,6 +83,7 @@ void setup() {
     return;
   }
 
+  Serial.println("Longer integration produced higher Y as expected.");
   Serial.println("TEST_PASS: test_integration_time");
 }
 

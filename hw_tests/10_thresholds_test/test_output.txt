@@ -1,2 +1,8 @@
 TEST_START: test_thresholds
+Dark Z average: 104
+Bright Z average: 1877
+Setting thresholds low=124 high=1857
+ALS interrupt enabled
+AINT after bright: true
+AINT after dark: true
 TEST_PASS: test_thresholds

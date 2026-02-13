@@ -1,2 +1,5 @@
 TEST_START: test_cie_cct
+Raw channels: X=1200 Y=3440 Z=1915 IR1=257
+CIE x,y: 0.1831, 0.5248
+CCT: 9236.6
 TEST_PASS: test_cie_cct

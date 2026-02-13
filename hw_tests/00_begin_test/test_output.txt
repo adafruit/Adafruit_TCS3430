@@ -1,2 +1,9 @@
 TEST_START: test_begin
+begin() result: true
+Chip ID: 0xDC (expected 0xDC)
+PON status: true
+AEN status: true
+Channels: X=146 Y=398 Z=227 IR1=32
+second begin() result: true
+bad address begin() result: false
 TEST_PASS: test_begin

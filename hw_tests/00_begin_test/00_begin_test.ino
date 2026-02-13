@@ -40,24 +40,36 @@ void setup() {
 
   Serial.println("TEST_START: test_begin");
 
-  if (!tcs.begin()) {
+  bool begin_ok = tcs.begin();
+  Serial.print("begin() result: ");
+  Serial.println(begin_ok ? "true" : "false");
+  if (!begin_ok) {
     Serial.println("TEST_FAIL: test_begin: begin() failed");
     return;
   }
 
   uint8_t chip_id = read8(TCS3430_REG_ID);
+  Serial.print("Chip ID: 0x");
+  Serial.print(chip_id, HEX);
+  Serial.println(" (expected 0xDC)");
   if (chip_id != 0xDC) {
     Serial.print("TEST_FAIL: test_begin: bad chip id 0x");
     Serial.println(chip_id, HEX);
     return;
   }
 
-  if (!tcs.isPoweredOn()) {
+  bool pon = tcs.isPoweredOn();
+  Serial.print("PON status: ");
+  Serial.println(pon ? "true" : "false");
+  if (!pon) {
     Serial.println("TEST_FAIL: test_begin: PON not set");
     return;
   }
 
-  if (!tcs.isALSEnabled()) {
+  bool aen = tcs.isALSEnabled();
+  Serial.print("AEN status: ");
+  Serial.println(aen ? "true" : "false");
+  if (!aen) {
     Serial.println("TEST_FAIL: test_begin: AEN not set");
     return;
   }
@@ -75,6 +87,15 @@ void setup() {
     return;
   }
 
+  Serial.print("Channels: X=");
+  Serial.print(x);
+  Serial.print(" Y=");
+  Serial.print(y);
+  Serial.print(" Z=");
+  Serial.print(z);
+  Serial.print(" IR1=");
+  Serial.println(ir1);
+
   if (x == 0 || y == 0 || z == 0 || ir1 == 0) {
     Serial.print("TEST_FAIL: test_begin: zero reading X=");
     Serial.print(x);
@@ -87,12 +108,18 @@ void setup() {
     return;
   }
 
-  if (!tcs.begin()) {
+  bool second_begin = tcs.begin();
+  Serial.print("second begin() result: ");
+  Serial.println(second_begin ? "true" : "false");
+  if (!second_begin) {
     Serial.println("TEST_FAIL: test_begin: second begin failed");
     return;
   }
 
-  if (tcs_bad.begin(0x3A)) {
+  bool bad_begin = tcs_bad.begin(0x3A);
+  Serial.print("bad address begin() result: ");
+  Serial.println(bad_begin ? "true" : "false");
+  if (bad_begin) {
     Serial.println("TEST_FAIL: test_begin: bad address should fail");
     return;
   }

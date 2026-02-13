@@ -1,2 +1,4 @@
 TEST_START: 09_saturation_test
+Settings: gain=128X, integration=711 ms, brightness=255
+ASAT detected after 1 checks
 TEST_PASS: 09_saturation_test

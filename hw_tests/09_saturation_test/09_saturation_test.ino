@@ -28,6 +28,7 @@ void setup() {
   pixels.setBrightness(255);
   setAll(255, 255, 255);
 
+  Serial.println("Settings: gain=128X, integration=711 ms, brightness=255");
   tcs.setALSGain(TCS3430_GAIN_128X);
   // Max integration time: ATIME=255 -> 711ms
   tcs.setIntegrationTime(711.0f);
@@ -36,7 +37,9 @@ void setup() {
 
   // Check multiple times - ASAT may take a cycle to latch
   bool saturated = false;
+  uint8_t tries = 0;
   for (uint8_t i = 0; i < 5; i++) {
+    tries = i + 1;
     if (tcs.isALSSaturated()) {
       saturated = true;
       break;
@@ -49,6 +52,10 @@ void setup() {
     setAll(0, 0, 0);
     return;
   }
+
+  Serial.print("ASAT detected after ");
+  Serial.print(tries);
+  Serial.println(" checks");
 
   setAll(0, 0, 0);
   Serial.println("TEST_PASS: 09_saturation_test");

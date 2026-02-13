@@ -36,6 +36,21 @@ void setup() {
   pixels.setBrightness(80);
   setAll(255, 255, 255);
 
+  uint16_t x = 0, y = 0, z = 0, ir1 = 0;
+  if (!tcs.getChannels(&x, &y, &z, &ir1)) {
+    Serial.println("TEST_FAIL: test_cie_cct: getChannels failed");
+    setAll(0, 0, 0);
+    return;
+  }
+  Serial.print("Raw channels: X=");
+  Serial.print(x);
+  Serial.print(" Y=");
+  Serial.print(y);
+  Serial.print(" Z=");
+  Serial.print(z);
+  Serial.print(" IR1=");
+  Serial.println(ir1);
+
   float cie_x = 0.0f, cie_y = 0.0f;
   if (!tcs.getCIE(&cie_x, &cie_y)) {
     Serial.println("TEST_FAIL: test_cie_cct: getCIE failed");
@@ -44,6 +59,13 @@ void setup() {
   }
 
   float cct = tcs.getCCT();
+
+  Serial.print("CIE x,y: ");
+  Serial.print(cie_x, 4);
+  Serial.print(", ");
+  Serial.println(cie_y, 4);
+  Serial.print("CCT: ");
+  Serial.println(cct, 1);
 
   setAll(0, 0, 0);
 

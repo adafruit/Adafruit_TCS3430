@@ -1,2 +1,4 @@
 TEST_START: test_channels
+Channel averages: X=40 Y=26 Z=14 IR1=13
+All channels non-zero.
 TEST_PASS: test_channels

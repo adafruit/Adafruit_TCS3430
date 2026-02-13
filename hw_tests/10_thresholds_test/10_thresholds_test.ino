@@ -58,6 +58,8 @@ void setup() {
     Serial.println("TEST_FAIL: test_thresholds: dark read failed");
     return;
   }
+  Serial.print("Dark Z average: ");
+  Serial.println(dark);
 
   setAll(255, 255, 255);
   uint16_t bright = 0;
@@ -66,6 +68,8 @@ void setup() {
     setAll(0, 0, 0);
     return;
   }
+  Serial.print("Bright Z average: ");
+  Serial.println(bright);
   setAll(0, 0, 0);
 
   uint16_t low = dark + 20;
@@ -74,12 +78,18 @@ void setup() {
     high = low + 10;
   }
 
+  Serial.print("Setting thresholds low=");
+  Serial.print(low);
+  Serial.print(" high=");
+  Serial.println(high);
+
   if (!tcs.setALSThresholdLow(low) || !tcs.setALSThresholdHigh(high)) {
     Serial.println("TEST_FAIL: test_thresholds: set failed");
     return;
   }
 
   tcs.enableALSInt(true);
+  Serial.println("ALS interrupt enabled");
   tcs.clearALSInterrupt();
 
   setAll(255, 255, 255);
@@ -87,7 +97,10 @@ void setup() {
   while (!tcs.isALSInterrupt() && (millis() - start) < 2000) {
     delay(10);
   }
-  if (!tcs.isALSInterrupt()) {
+  bool bright_int = tcs.isALSInterrupt();
+  Serial.print("AINT after bright: ");
+  Serial.println(bright_int ? "true" : "false");
+  if (!bright_int) {
     Serial.print("TEST_FAIL: test_thresholds: AINT not set on bright, low=");
     Serial.print(low);
     Serial.print(" high=");
@@ -102,7 +115,10 @@ void setup() {
   while (!tcs.isALSInterrupt() && (millis() - start) < 2000) {
     delay(10);
   }
-  if (!tcs.isALSInterrupt()) {
+  bool dark_int = tcs.isALSInterrupt();
+  Serial.print("AINT after dark: ");
+  Serial.println(dark_int ? "true" : "false");
+  if (!dark_int) {
     Serial.println("TEST_FAIL: test_thresholds: AINT not set on dark");
     return;
   }

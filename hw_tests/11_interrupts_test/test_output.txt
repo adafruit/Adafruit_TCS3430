@@ -1,2 +1,8 @@
 TEST_START: test_interrupts
+Enabling ALS interrupt (AIEN)
+AINT status before light: false
+Poll 0 AINT=true
+Clearing ALS interrupt
+AINT status after clear: false
+Disabling ALS interrupt (AIEN)
 TEST_PASS: test_interrupts

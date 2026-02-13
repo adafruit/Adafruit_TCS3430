@@ -1,6 +1,6 @@
 TEST_START: test_sai
-z1 (frozen): 936
-z2 (frozen): 936
-z3 (dark): 55
-z4 (bright): 920
+z1 (frozen): 920
+z2 (frozen): 920
+z3 (dark): 51
+z4 (bright): 911
 TEST_PASS: test_sai

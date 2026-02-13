@@ -53,14 +53,25 @@ void setup() {
   pixels.begin();
   pixels.setBrightness(80);
 
+  Serial.println("Powering off sensor");
   if (!tcs.powerOn(false)) {
     Serial.println("TEST_FAIL: test_power: power off failed");
     return;
   }
+  Serial.print("isPoweredOn after off: ");
+  Serial.println(tcs.isPoweredOn() ? "true" : "false");
   delay(50);
 
   uint16_t x = 0, y = 0, z = 0, ir1 = 0;
   bool read_ok = readAverage(&x, &y, &z, &ir1);
+  Serial.print("Read while off: X=");
+  Serial.print(x);
+  Serial.print(" Y=");
+  Serial.print(y);
+  Serial.print(" Z=");
+  Serial.print(z);
+  Serial.print(" IR1=");
+  Serial.println(ir1);
   if (read_ok && (x != 0 || y != 0 || z != 0 || ir1 != 0)) {
     Serial.print("TEST_FAIL: test_power: non-zero while off X=");
     Serial.print(x);
@@ -73,10 +84,13 @@ void setup() {
     return;
   }
 
+  Serial.println("Powering on sensor + enabling ALS");
   if (!tcs.powerOn(true) || !tcs.ALSEnable(true)) {
     Serial.println("TEST_FAIL: test_power: power on failed");
     return;
   }
+  Serial.print("isPoweredOn after on: ");
+  Serial.println(tcs.isPoweredOn() ? "true" : "false");
 
   tcs.setIntegrationTime(100.0f);
   tcs.setALSGain(TCS3430_GAIN_16X);
@@ -88,6 +102,15 @@ void setup() {
     setAll(0, 0, 0);
     return;
   }
+
+  Serial.print("Read after on: X=");
+  Serial.print(x);
+  Serial.print(" Y=");
+  Serial.print(y);
+  Serial.print(" Z=");
+  Serial.print(z);
+  Serial.print(" IR1=");
+  Serial.println(ir1);
 
   setAll(0, 0, 0);
 

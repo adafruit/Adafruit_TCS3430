@@ -1,2 +1,7 @@
 TEST_START: test_amux_ir2
+Setting AMUX to X (IR2 disabled)
+AMUX off (X channel): X=339 Y=215 Z=115 IR1=112
+Setting AMUX to IR2
+AMUX on (IR2): IR2=48
+Difference between X and IR2: 291
 TEST_PASS: test_amux_ir2

@@ -40,8 +40,12 @@ void setup() {
   tcs.setALSThresholdLow(0);
   tcs.setALSThresholdHigh(100);
   tcs.setInterruptClearOnRead(false);
+  Serial.println("Enabling ALS interrupt (AIEN)");
   tcs.enableALSInt(true);
   tcs.clearALSInterrupt();
+
+  Serial.print("AINT status before light: ");
+  Serial.println(tcs.isALSInterrupt() ? "true" : "false");
 
   setAll(255, 255, 255);
 
@@ -49,19 +53,32 @@ void setup() {
   bool intFired = false;
   for (uint8_t i = 0; i < 20; i++) {
     delay(100);
-    if (tcs.isALSInterrupt()) {
+    bool aint = tcs.isALSInterrupt();
+    Serial.print("Poll ");
+    Serial.print(i);
+    Serial.print(" AINT=");
+    Serial.println(aint ? "true" : "false");
+    if (aint) {
       intFired = true;
       break;
     }
   }
 
   if (!intFired) {
-    Serial.println("TEST_FAIL: test_interrupts: ALS interrupt never fired (2s timeout)");
+    Serial.println(
+        "TEST_FAIL: test_interrupts: ALS interrupt never fired (2s timeout)");
     setAll(0, 0, 0);
     return;
   }
 
+  Serial.println("Clearing ALS interrupt");
   tcs.clearALSInterrupt();
+  Serial.print("AINT status after clear: ");
+  Serial.println(tcs.isALSInterrupt() ? "true" : "false");
+
+  Serial.println("Disabling ALS interrupt (AIEN)");
+  tcs.enableALSInt(false);
+
   setAll(0, 0, 0);
   Serial.println("TEST_PASS: test_interrupts");
 }

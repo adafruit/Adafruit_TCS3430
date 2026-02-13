@@ -42,6 +42,15 @@ void setup() {
     return;
   }
 
+  Serial.print("Channel averages: X=");
+  Serial.print(x);
+  Serial.print(" Y=");
+  Serial.print(y);
+  Serial.print(" Z=");
+  Serial.print(z);
+  Serial.print(" IR1=");
+  Serial.println(ir1);
+
   if (x == 0 || y == 0 || z == 0 || ir1 == 0) {
     Serial.print("TEST_FAIL: test_channels: zero reading X=");
     Serial.print(x);
@@ -54,6 +63,7 @@ void setup() {
     return;
   }
 
+  Serial.println("All channels non-zero.");
   Serial.println("TEST_PASS: test_channels");
 }
 
