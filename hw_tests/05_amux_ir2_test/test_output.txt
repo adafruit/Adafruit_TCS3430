@@ -1,0 +1,2 @@
+TEST_START: test_amux_ir2
+TEST_PASS: test_amux_ir2

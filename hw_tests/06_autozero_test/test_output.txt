@@ -1,0 +1,4 @@
+TEST_START: test_autozero
+Autozero first-read us: 61440
+No-auto-zero first-read us: 48152
+TEST_PASS: test_autozero

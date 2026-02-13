@@ -1,0 +1,2 @@
+TEST_START: test_begin
+TEST_PASS: test_begin

@@ -1,0 +1,12 @@
+TEST_START: 02_gain_test
+  cal: bright=5 Y@1X=12
+  cal: bright=15 Y@1X=24
+  cal: bright=25 Y@1X=37
+  cal: bright=35 Y@1X=49
+  cal: bright=45 Y@1X=61
+  gain_step=0 Y=61
+  gain_step=1 Y=247
+  gain_step=2 Y=981
+  gain_step=3 Y=4052
+  gain_step=4 Y=8366
+TEST_PASS: 02_gain_test

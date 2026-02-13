@@ -1,0 +1,4 @@
+TEST_START: test_wlong
+No-WLONG delay us: 5203
+WLONG delay us: 28868
+TEST_PASS: test_wlong

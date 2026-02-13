@@ -1,0 +1,8 @@
+TEST_START: 14_persistence_test
+  dark=102
+  bright=1674
+  threshold high=495
+  no interrupt after 150ms: OK
+  interrupt fired after persistence: OK
+  PERS_EVERY fires immediately: OK
+TEST_PASS: 14_persistence_test

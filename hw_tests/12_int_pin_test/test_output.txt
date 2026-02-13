@@ -1,0 +1,8 @@
+TEST_START: 12_int_pin_test
+Idle pin: OK (idle)
+INT went active: PASS
+INT cleared to idle: PASS
+INT stays idle with AIEN off: PASS
+Toggle cycles: 5/5
+Toggle test: PASS
+TEST_PASS: 12_int_pin_test

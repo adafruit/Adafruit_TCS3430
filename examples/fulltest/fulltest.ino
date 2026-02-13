@@ -1,7 +1,7 @@
 /*!
- * @file test_TCS3430.ino
+ * @file fulltest.ino
  *
- * Basic test sketch for TCS3430 Color and ALS Sensor
+ * Full test sketch for TCS3430 Color and ALS Sensor
  *
  * Limor 'ladyada' Fried with assistance from Claude Code
  * MIT License
@@ -180,14 +180,19 @@ void loop() {
     tcs.clearALSInterrupt();
   }
 
-  uint16_t x, y, z;
-  tcs.getData(&x, &y, &z);
-  Serial.print(F("X: "));
-  Serial.print(x);
-  Serial.print(F(", Y: "));
-  Serial.print(y);
-  Serial.print(F(", Z: "));
-  Serial.println(z);
+  uint16_t x, y, z, ir1;
+  if (tcs.getChannels(&x, &y, &z, &ir1)) {
+    Serial.print(F("X: "));
+    Serial.print(x);
+    Serial.print(F(", Y: "));
+    Serial.print(y);
+    Serial.print(F(", Z: "));
+    Serial.print(z);
+    Serial.print(F(", IR1: "));
+    Serial.println(ir1);
+  } else {
+    Serial.println(F("Failed to read channels"));
+  }
 
   delay(1000);
 }

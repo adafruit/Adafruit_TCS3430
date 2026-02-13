@@ -1,0 +1,4 @@
+TEST_START: test_wait
+No-wait avg us: 47500
+With-wait avg us: 1215999
+TEST_PASS: test_wait

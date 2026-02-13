@@ -429,11 +429,10 @@ bool Adafruit_TCS3430::isALSSaturated() {
  *    @return true on success
  */
 bool Adafruit_TCS3430::clearALSSaturated() {
+  // Write 0x80 to STATUS to clear saturation flag
   Adafruit_BusIO_Register status_reg =
       Adafruit_BusIO_Register(i2c_dev, TCS3430_REG_STATUS);
-  Adafruit_BusIO_RegisterBits asat_bit =
-      Adafruit_BusIO_RegisterBits(&status_reg, 1, 7);
-  return asat_bit.write(1);
+  return status_reg.write(0x80);
 }
 
 /*!
@@ -453,28 +452,164 @@ bool Adafruit_TCS3430::isALSInterrupt() {
  *    @return true on success
  */
 bool Adafruit_TCS3430::clearALSInterrupt() {
+  // Write 0xFF to STATUS to clear all flags. Note: if the threshold
+  // condition still exists and ALS is running, AINT will re-fire
+  // on the next integration cycle.
   Adafruit_BusIO_Register status_reg =
       Adafruit_BusIO_Register(i2c_dev, TCS3430_REG_STATUS);
-  Adafruit_BusIO_RegisterBits aint_bit =
-      Adafruit_BusIO_RegisterBits(&status_reg, 1, 4);
-  return aint_bit.write(1);
+  return status_reg.write(0xFF);
 }
 
 /*!
- *    @brief  Get sensor data for X, Y, Z channels
+ *    @brief  Read X, Y, Z, and IR1 channels in a single burst
  *    @param  x Pointer to store X channel data
  *    @param  y Pointer to store Y channel data
  *    @param  z Pointer to store Z channel data
+ *    @param  ir1 Pointer to store IR1 channel data
+ *    @return true on success
  */
-void Adafruit_TCS3430::getData(uint16_t* x, uint16_t* y, uint16_t* z) {
-  uint8_t buffer[6];
+bool Adafruit_TCS3430::getChannels(uint16_t* x, uint16_t* y, uint16_t* z,
+                                   uint16_t* ir1) {
+  bool was_ir2 = getALSMUX_IR2();
+  if (was_ir2) {
+    if (!setALSMUX_IR2(false)) {
+      return false;
+    }
+  }
+
+  uint8_t buffer[8];
   Adafruit_BusIO_Register data_reg =
-      Adafruit_BusIO_Register(i2c_dev, TCS3430_REG_CH0DATAL, 6);
-  data_reg.read(buffer, 6);
+      Adafruit_BusIO_Register(i2c_dev, TCS3430_REG_CH0DATAL, 8);
+  if (!data_reg.read(buffer, 8)) {
+    if (was_ir2) {
+      setALSMUX_IR2(true);
+    }
+    return false;
+  }
 
   *z = buffer[0] | ((uint16_t)buffer[1] << 8);
   *y = buffer[2] | ((uint16_t)buffer[3] << 8);
-  *x = buffer[4] | ((uint16_t)buffer[5] << 8);
+  *ir1 = buffer[4] | ((uint16_t)buffer[5] << 8);
+  *x = buffer[6] | ((uint16_t)buffer[7] << 8);
+
+  if (was_ir2) {
+    setALSMUX_IR2(true);
+  }
+
+  return true;
+}
+
+/*!
+ *    @brief  Read IR2 (CH3) by switching AMUX to IR2
+ *    @return IR2 channel value
+ */
+uint16_t Adafruit_TCS3430::getIR2() {
+  uint16_t ir2 = 0;
+  bool was_ir2 = getALSMUX_IR2();
+
+  if (!setALSMUX_IR2(true)) {
+    return 0;
+  }
+
+  delay((uint16_t)getIntegrationTime());
+
+  Adafruit_BusIO_Register ch3_reg =
+      Adafruit_BusIO_Register(i2c_dev, TCS3430_REG_CH3DATAL, 2, LSBFIRST);
+  ir2 = ch3_reg.read();
+
+  if (!was_ir2) {
+    setALSMUX_IR2(false);
+  }
+
+  return ir2;
+}
+
+/*!
+ *    @brief  Calculate CIE 1931 chromaticity coordinates
+ *    @param  CIEx Pointer to store CIE x
+ *    @param  CIEy Pointer to store CIE y
+ *    @return true on success
+ */
+bool Adafruit_TCS3430::getCIE(float* CIEx, float* CIEy) {
+  uint16_t x = 0;
+  uint16_t y = 0;
+  uint16_t z = 0;
+  uint16_t ir1 = 0;
+
+  if (!getChannels(&x, &y, &z, &ir1)) {
+    return false;
+  }
+
+  float sum = (float)x + (float)y + (float)z;
+  if (sum <= 0.0f) {
+    *CIEx = 0.0f;
+    *CIEy = 0.0f;
+    return false;
+  }
+
+  *CIEx = (float)x / sum;
+  *CIEy = (float)y / sum;
+  return true;
+}
+
+/*!
+ *    @brief  Calculate lux from the Y channel
+ *    @return Calculated lux
+ */
+float Adafruit_TCS3430::getLux() {
+  uint16_t x = 0;
+  uint16_t y = 0;
+  uint16_t z = 0;
+  uint16_t ir1 = 0;
+
+  if (!getChannels(&x, &y, &z, &ir1)) {
+    return 0.0f;
+  }
+
+  float gain = 1.0f;
+  switch (getALSGain()) {
+    case TCS3430_GAIN_1X:
+      gain = 1.0f;
+      break;
+    case TCS3430_GAIN_4X:
+      gain = 4.0f;
+      break;
+    case TCS3430_GAIN_16X:
+      gain = 16.0f;
+      break;
+    case TCS3430_GAIN_64X:
+      gain = 66.0f;
+      break;
+    case TCS3430_GAIN_128X:
+      gain = 137.0f;
+      break;
+    default:
+      gain = 1.0f;
+      break;
+  }
+
+  float integration_ms = getIntegrationTime();
+  if (integration_ms <= 0.0f) {
+    return 0.0f;
+  }
+
+  return (float)y / gain / (integration_ms / 1000.0f);
+}
+
+/*!
+ *    @brief  Calculate correlated color temperature (CCT)
+ *    @return Correlated color temperature in Kelvin
+ */
+float Adafruit_TCS3430::getCCT() {
+  float x = 0.0f;
+  float y = 0.0f;
+
+  if (!getCIE(&x, &y)) {
+    return 0.0f;
+  }
+
+  float n = (x - 0.3320f) / (0.1858f - y);
+  return (449.0f * n * n * n) + (3525.0f * n * n) + (6823.3f * n) + 5520.33f;
 }
 
 /*!

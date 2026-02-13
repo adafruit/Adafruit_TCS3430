@@ -155,7 +155,11 @@ class Adafruit_TCS3430 {
   bool isALSInterrupt();
   bool clearALSInterrupt();
 
-  void getData(uint16_t* x, uint16_t* y, uint16_t* z);
+  bool getChannels(uint16_t* x, uint16_t* y, uint16_t* z, uint16_t* ir1);
+  uint16_t getIR2();
+  bool getCIE(float* CIEx, float* CIEy);
+  float getLux();
+  float getCCT();
 
   bool setInterruptClearOnRead(bool enable);
   bool getInterruptClearOnRead();

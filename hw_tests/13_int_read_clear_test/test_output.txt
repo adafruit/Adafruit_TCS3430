@@ -1,0 +1,4 @@
+TEST_START: test_int_read_clear
+  Phase 1 OK: AINT persists across 3 reads
+  Phase 2 OK: AINT auto-cleared on read
+TEST_PASS: test_int_read_clear
