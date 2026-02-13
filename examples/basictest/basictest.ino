@@ -28,6 +28,17 @@ void setup() {
   }
 
   Serial.println(F("TCS3430 found!"));
+
+  // --- Tweak these settings for your environment ---
+  tcs.setALSGain(TCS3430_GAIN_16X);   // 1X, 4X, 16X, 64X, or 128X
+  tcs.setIntegrationTime(100.0f);      // 2.78ms to 711ms
+  // tcs.setWaitTime(50.0f);           // optional wait between cycles
+  // tcs.setWaitLong(true);            // 12x wait multiplier
+
+  Serial.println(F("Settings:"));
+  Serial.print(F("  Gain: 16X"));
+  Serial.print(F("  Integration: 100ms"));
+  Serial.println();
 }
 
 void loop() {
