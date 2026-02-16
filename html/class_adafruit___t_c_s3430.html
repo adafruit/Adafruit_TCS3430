@@ -162,15 +162,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a67f130e1c88759ee09b4abfebd73d417"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___t_c_s3430.html#a67f130e1c88759ee09b4abfebd73d417">getIR2</a> ()</td></tr>
 <tr class="memdesc:a67f130e1c88759ee09b4abfebd73d417"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read IR2 (CH3) by switching AMUX to IR2.  <a href="#a67f130e1c88759ee09b4abfebd73d417">More...</a><br /></td></tr>
 <tr class="separator:a67f130e1c88759ee09b4abfebd73d417"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54f3acc6dbee91957737617b5509d966"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___t_c_s3430.html#a54f3acc6dbee91957737617b5509d966">getCIE</a> (float *CIEx, float *CIEy)</td></tr>
-<tr class="memdesc:a54f3acc6dbee91957737617b5509d966"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate CIE 1931 chromaticity coordinates.  <a href="#a54f3acc6dbee91957737617b5509d966">More...</a><br /></td></tr>
-<tr class="separator:a54f3acc6dbee91957737617b5509d966"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7f15473f9057c48a8343a4c2007ae4aa"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___t_c_s3430.html#a7f15473f9057c48a8343a4c2007ae4aa">getLux</a> ()</td></tr>
-<tr class="memdesc:a7f15473f9057c48a8343a4c2007ae4aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate lux from the Y channel.  <a href="#a7f15473f9057c48a8343a4c2007ae4aa">More...</a><br /></td></tr>
-<tr class="separator:a7f15473f9057c48a8343a4c2007ae4aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae56061f5e338f19676f611efdd4e9ad4"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___t_c_s3430.html#ae56061f5e338f19676f611efdd4e9ad4">getCCT</a> ()</td></tr>
-<tr class="memdesc:ae56061f5e338f19676f611efdd4e9ad4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate correlated color temperature (CCT)  <a href="#ae56061f5e338f19676f611efdd4e9ad4">More...</a><br /></td></tr>
-<tr class="separator:ae56061f5e338f19676f611efdd4e9ad4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a3597dcdbe2bad06ae67c2cc7fed89b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___t_c_s3430.html#a5a3597dcdbe2bad06ae67c2cc7fed89b">setInterruptClearOnRead</a> (bool enable)</td></tr>
 <tr class="memdesc:a5a3597dcdbe2bad06ae67c2cc7fed89b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set interrupt clear on read mode.  <a href="#a5a3597dcdbe2bad06ae67c2cc7fed89b">More...</a><br /></td></tr>
 <tr class="separator:a5a3597dcdbe2bad06ae67c2cc7fed89b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -880,84 +871,6 @@ Public Member Functions</h2></td></tr>
 
 <p>Read IR2 (CH3) by switching AMUX to IR2. </p>
 <dl class="section return"><dt>Returns</dt><dd>IR2 channel value </dd></dl>
-
-</div>
-</div>
-<a id="a54f3acc6dbee91957737617b5509d966"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a54f3acc6dbee91957737617b5509d966">&#9670;&nbsp;</a></span>getCIE()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool Adafruit_TCS3430::getCIE </td>
-          <td>(</td>
-          <td class="paramtype">float *&#160;</td>
-          <td class="paramname"><em>CIEx</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float *&#160;</td>
-          <td class="paramname"><em>CIEy</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Calculate CIE 1931 chromaticity coordinates. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">CIEx</td><td>Pointer to store CIE x </td></tr>
-    <tr><td class="paramname">CIEy</td><td>Pointer to store CIE y </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>true on success </dd></dl>
-
-</div>
-</div>
-<a id="a7f15473f9057c48a8343a4c2007ae4aa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7f15473f9057c48a8343a4c2007ae4aa">&#9670;&nbsp;</a></span>getLux()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float Adafruit_TCS3430::getLux </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Calculate lux from the Y channel. </p>
-<dl class="section return"><dt>Returns</dt><dd>Calculated lux </dd></dl>
-
-</div>
-</div>
-<a id="ae56061f5e338f19676f611efdd4e9ad4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae56061f5e338f19676f611efdd4e9ad4">&#9670;&nbsp;</a></span>getCCT()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float Adafruit_TCS3430::getCCT </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Calculate correlated color temperature (CCT) </p>
-<dl class="section return"><dt>Returns</dt><dd>Correlated color temperature in Kelvin </dd></dl>
 
 </div>
 </div>
