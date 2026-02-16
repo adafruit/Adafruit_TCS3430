@@ -33,25 +33,25 @@
 Adafruit_TCS3430 tcs = Adafruit_TCS3430();
 
 static const float kColorMatrix[3][4] = {
-    {-0.28837f, 0.58484f, 1.55207f, -1.21521f},
-    {-0.30518f, 0.60817f, 1.62203f, -1.25651f},
-    {-0.23132f, 0.46517f, 1.22896f, -0.95905f},
+    {-0.28837, 0.58484, 1.55207, -1.21521},
+    {-0.30518, 0.60817, 1.62203, -1.25651},
+    {-0.23132, 0.46517, 1.22896, -0.95905},
 };
 
 float gainToValue(tcs3430_gain_t gain) {
   switch (gain) {
     case TCS3430_GAIN_1X:
-      return 1.0f;
+      return 1.0;
     case TCS3430_GAIN_4X:
-      return 4.0f;
+      return 4.0;
     case TCS3430_GAIN_16X:
-      return 16.0f;
+      return 16.0;
     case TCS3430_GAIN_64X:
-      return 66.0f;
+      return 66.0;
     case TCS3430_GAIN_128X:
-      return 137.0f;
+      return 137.0;
     default:
-      return 1.0f;
+      return 1.0;
   }
 }
 
@@ -74,8 +74,8 @@ void setup() {
 
   // --- Tweak these settings for your environment ---
   tcs.setALSGain(TCS3430_GAIN_64X); // 1X, 4X, 16X, 64X, or 128X
-  tcs.setIntegrationTime(100.0f);   // 2.78ms to 711ms
-  // tcs.setWaitTime(50.0f);        // optional wait between cycles
+  tcs.setIntegrationTime(100.0);    // 2.78ms to 711ms
+  // tcs.setWaitTime(50.0);        // optional wait between cycles
   // tcs.setWaitLong(true);         // 12x wait multiplier
 }
 
@@ -91,8 +91,8 @@ void loop() {
     return;
   }
 
-  float cie_x = 0.0f;
-  float cie_y = 0.0f;
+  float cie_x = 0.0;
+  float cie_y = 0.0;
   float cie_X = kColorMatrix[0][0] * x + kColorMatrix[0][1] * y +
                 kColorMatrix[0][2] * z + kColorMatrix[0][3] * ir1;
   float cie_Y = kColorMatrix[1][0] * x + kColorMatrix[1][1] * y +
@@ -101,22 +101,22 @@ void loop() {
                 kColorMatrix[2][2] * z + kColorMatrix[2][3] * ir1;
 
   float sum = cie_X + cie_Y + cie_Z;
-  if (sum > 0.0f) {
+  if (sum > 0.0) {
     cie_x = cie_X / sum;
     cie_y = cie_Y / sum;
   }
 
-  float cct = 0.0f;
-  if (sum > 0.0f && (0.1858f - cie_y) != 0.0f) {
-    float n = (cie_x - 0.3320f) / (0.1858f - cie_y);
-    cct = (449.0f * n * n * n) + (3525.0f * n * n) + (6823.3f * n) + 5520.33f;
+  float cct = 0.0;
+  if (sum > 0.0 && (0.1858 - cie_y) != 0.0) {
+    float n = (cie_x - 0.3320) / (0.1858 - cie_y);
+    cct = (449.0 * n * n * n) + (3525.0 * n * n) + (6823.3 * n) + 5520.33;
   }
 
   float gain = gainToValue(tcs.getALSGain());
   float integration_ms = tcs.getIntegrationTime();
-  float lux = 0.0f;
-  if (integration_ms > 0.0f) {
-    lux = cie_Y * (16.0f / gain) * (100.0f / integration_ms);
+  float lux = 0.0;
+  if (integration_ms > 0.0) {
+    lux = cie_Y * (16.0 / gain) * (100.0 / integration_ms);
   }
 
   Serial.print(F("X: "));

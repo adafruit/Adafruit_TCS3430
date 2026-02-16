@@ -1,8 +1,9 @@
-/*!\
+/*!
  * @file basictest.ino
  *
- * Basic test sketch for TCS3430 XYZ Tristimulus Color Sensor
- * Reads raw channels
+ * Basic test sketch for TCS3430 XYZ Tristimulus Color Sensor.
+ * Polls the ALS interrupt flag to know when new data is ready
+ * instead of using a fixed delay.
  *
  * Limor 'ladyada' Fried with assistance from Claude Code
  * MIT License
@@ -31,32 +32,33 @@ void setup() {
 
   // --- Tweak these settings for your environment ---
   tcs.setALSGain(TCS3430_GAIN_64X); // 1X, 4X, 16X, 64X, or 128X
-  tcs.setIntegrationTime(100.0f);   // 2.78ms to 711ms
-  // tcs.setWaitTime(50.0f);        // optional wait between cycles
-  // tcs.setWaitLong(true);         // 12x wait multiplier
+  tcs.setIntegrationTime(100.0);    // 2.78ms to 711ms
 
-  Serial.println(F("Settings:"));
-  Serial.print(F("  Gain: 64X"));
-  Serial.print(F("  Integration: 100ms"));
-  Serial.println();
+  // Enable ALS interrupt so we can poll AINT for data ready
+  tcs.enableALSInt(true);
+  tcs.setInterruptPersistence(TCS3430_PERS_EVERY);
+  tcs.clearALSInterrupt();
 }
 
 void loop() {
+  // Wait for new data
+  while (!tcs.isALSInterrupt()) {
+    delay(5);
+  }
+
   uint16_t x, y, z, ir1;
   if (!tcs.getChannels(&x, &y, &z, &ir1)) {
     Serial.println(F("Failed to read channels"));
-    delay(1000);
-    return;
+  } else {
+    Serial.print(F("X: "));
+    Serial.print(x);
+    Serial.print(F("  Y: "));
+    Serial.print(y);
+    Serial.print(F("  Z: "));
+    Serial.print(z);
+    Serial.print(F("  IR1: "));
+    Serial.println(ir1);
   }
 
-  Serial.print(F("X: "));
-  Serial.print(x);
-  Serial.print(F("  Y: "));
-  Serial.print(y);
-  Serial.print(F("  Z: "));
-  Serial.print(z);
-  Serial.print(F("  IR1: "));
-  Serial.println(ir1);
-
-  delay(1000);
+  tcs.clearALSInterrupt();
 }
