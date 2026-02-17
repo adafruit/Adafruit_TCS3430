@@ -42,23 +42,24 @@ void setup() {
 
 void loop() {
   // Wait for new data
-  while (!tcs.isALSInterrupt()) {
-    delay(5);
-  }
+  if (tcs.isALSInterrupt()) {
+	  uint16_t x, y, z, ir1;
+	  if (!tcs.getChannels(&x, &y, &z, &ir1)) {
+		Serial.println(F("Failed to read channels"));
+	  } else {
+		Serial.print(F("X: "));
+		Serial.print(x);
+		Serial.print(F("  Y: "));
+		Serial.print(y);
+		Serial.print(F("  Z: "));
+		Serial.print(z);
+		Serial.print(F("  IR1: "));
+		Serial.println(ir1);
+	  }
 
-  uint16_t x, y, z, ir1;
-  if (!tcs.getChannels(&x, &y, &z, &ir1)) {
-    Serial.println(F("Failed to read channels"));
-  } else {
-    Serial.print(F("X: "));
-    Serial.print(x);
-    Serial.print(F("  Y: "));
-    Serial.print(y);
-    Serial.print(F("  Z: "));
-    Serial.print(z);
-    Serial.print(F("  IR1: "));
-    Serial.println(ir1);
+	  tcs.clearALSInterrupt();
   }
-
-  tcs.clearALSInterrupt();
+  
+  // Do something else!
+  delay(10);
 }
